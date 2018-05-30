@@ -22,9 +22,9 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     @Bean
     Queue ordersQueue() {
         return QueueBuilder.durable(QUEUE_ORDERS)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", QUEUE_DEAD_ORDERS)
-                .withArgument("x-message-ttl", 15000) //if message is not consumed in 15 seconds send to DLQ
+//                .withArgument("x-dead-letter-exchange", "")
+//                .withArgument("x-dead-letter-routing-key", QUEUE_DEAD_ORDERS)
+//                .withArgument("x-message-ttl", 15000) //if message is not consumed in 15 seconds send to DLQ
                 .build();
     }
 
