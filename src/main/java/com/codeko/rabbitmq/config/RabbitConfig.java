@@ -15,22 +15,18 @@ import org.springframework.messaging.handler.annotation.support.MessageHandlerMe
 @Configuration
 public class RabbitConfig implements RabbitListenerConfigurer {
 
-    public static final String QUEUE_ORDERS = "orders-queue";
+    /*public static final String QUEUE_ORDERS = "orders-queue";
     public static final String QUEUE_DEAD_ORDERS = "orders-dead-queue";
     public static final String EXCHANGE_ORDERS = "orders-exchange";
+    public static final String EXCHANGE_DEAD_ORDERS = "orders-dead-exchange";
 
     @Bean
     Queue ordersQueue() {
         return QueueBuilder.durable(QUEUE_ORDERS)
-//                .withArgument("x-dead-letter-exchange", "")
+                .withArgument("x-dead-letter-exchange", orderDlExchange().getName())
 //                .withArgument("x-dead-letter-routing-key", QUEUE_DEAD_ORDERS)
-//                .withArgument("x-message-ttl", 15000) //if message is not consumed in 15 seconds send to DLQ
+//                .withArgument("x-message-ttl", 5000) //if message is not consumed in 15 seconds send to DLQ
                 .build();
-    }
-
-    @Bean
-    Queue deadLetterQueue() {
-        return QueueBuilder.durable(QUEUE_DEAD_ORDERS).build();
     }
 
     @Bean
@@ -41,6 +37,71 @@ public class RabbitConfig implements RabbitListenerConfigurer {
     @Bean
     Binding binding(Queue ordersQueue, TopicExchange ordersExchange) {
         return BindingBuilder.bind(ordersQueue).to(ordersExchange).with(QUEUE_ORDERS);
+    }
+
+    @Bean
+    Queue deadLetterQueue() {
+        return QueueBuilder
+                .durable(QUEUE_DEAD_ORDERS)
+                .withArgument("x-message-ttl", 5000)
+                .withArgument("x-dead-letter-exchange", orderDlExchange().getName())
+                .build();
+    }
+
+    @Bean
+    Exchange orderDlExchange() {
+        return ExchangeBuilder
+                .topicExchange(EXCHANGE_DEAD_ORDERS)
+                .build();
+    }
+
+    @Bean
+    Binding worksDlBinding() {
+        return BindingBuilder
+                .bind(deadLetterQueue())
+                .to(orderDlExchange()).with(QUEUE_DEAD_ORDERS)
+                .noargs();
+    }*/
+
+    @Bean
+    Exchange worksExchange() {
+        return ExchangeBuilder.topicExchange("work.exchange")
+                .build();
+    }
+    @Bean
+    public Queue worksQueue() {
+        return QueueBuilder.durable("work.queue")
+                .withArgument("x-dead-letter-exchange", worksDlExchange().getName())
+                .build();
+    }
+    @Bean
+    Binding worksBinding() {
+        return BindingBuilder
+                .bind(worksQueue())
+                .to(worksExchange()).with("#").noargs();
+    }
+    // Dead letter exchange for holding rejected work units..
+    @Bean
+    Exchange worksDlExchange() {
+        return ExchangeBuilder
+                .topicExchange("work.exchange.dl")
+                .build();
+    }
+    //Queue to hold Deadletter messages from worksQueue
+    @Bean
+    public Queue worksDLQueue() {
+        return QueueBuilder
+                .durable("works.queue.dl")
+                .withArgument("x-message-ttl", 5000)
+                .withArgument("x-dead-letter-exchange", worksExchange().getName())
+                .build();
+    }
+    @Bean
+    Binding worksDlBinding() {
+        return BindingBuilder
+                .bind(worksDLQueue())
+                .to(worksDlExchange()).with("#")
+                .noargs();
     }
 
     /**

@@ -22,7 +22,8 @@ public class OrderMessageSender {
     }
 
     public void sendOrder(Order order) {
-        this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ORDERS, order);
+//        this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ORDERS, order);
+        this.rabbitTemplate.convertAndSend("work.queue", order);
     }
 
     public void sendOrderAsJson(Order order) {
@@ -32,7 +33,7 @@ public class OrderMessageSender {
                     .withBody(orderJson.getBytes())
                     .setContentType(MessageProperties.CONTENT_TYPE_JSON)
                     .build();
-            this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ORDERS, message);
+            this.rabbitTemplate.convertAndSend("work.queue", message);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

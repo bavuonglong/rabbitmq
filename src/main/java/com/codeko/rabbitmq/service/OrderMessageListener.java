@@ -9,14 +9,25 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Component
 public class OrderMessageListener {
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_ORDERS)
-    public void receiveMessage(Order order, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws Exception {
+//    @RabbitListener(queues = RabbitConfig.QUEUE_ORDERS)
+    @RabbitListener(queues = "work.queue")
+    public void receiveMessage(Order order, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag,
+                               @Header(required = false, name = "x-death") List<Map<String, String>> xDeath) throws Exception {
+        channel.basicAck(tag, false);
+        if (xDeath != null) {
+            log.info("size:  " +xDeath.size());
+            if (Long.parseLong(String.valueOf(xDeath.get(0).get("count"))) >= 3) {
+                channel.basicAck(tag, false);
+            }
+        }
         log.info("Order Received: " + order);
-//        channel.basicAck(tag, false);
-        channel.basicNack(tag, false, true);
+        channel.basicNack(tag, false, false);
     }
 }
