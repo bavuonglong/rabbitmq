@@ -1,0 +1,19 @@
+spring:
+  rabbitmq:
+    listener:
+      auto-startup: true
+      concurrency: 1
+      max-concurrency: 1
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 10000
+        multiplier: 2
+        stateless: true
+      simple:
+        acknowledge-mode: manual
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

@@ -20,11 +20,11 @@ public class OrderMessageListener {
     @RabbitListener(queues = "work.queue")
     public void receiveMessage(Order order, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag,
                                @Header(required = false, name = "x-death") List<Map<String, String>> xDeath) throws Exception {
-        channel.basicAck(tag, false);
         if (xDeath != null) {
             log.info("size:  " +xDeath.size());
             if (Long.parseLong(String.valueOf(xDeath.get(0).get("count"))) >= 3) {
                 channel.basicAck(tag, false);
+                return;
             }
         }
         log.info("Order Received: " + order);
