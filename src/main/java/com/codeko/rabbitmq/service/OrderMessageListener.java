@@ -16,7 +16,6 @@ import java.util.Map;
 @Component
 public class OrderMessageListener {
 
-//    @RabbitListener(queues = RabbitConfig.QUEUE_ORDERS)
     @RabbitListener(queues = "work.queue")
     public void receiveMessage(Order order, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag,
                                @Header(required = false, name = "x-death") List<Map<String, String>> xDeath) throws Exception {

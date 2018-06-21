@@ -22,7 +22,6 @@ public class OrderMessageSender {
     }
 
     public void sendOrder(Order order) {
-//        this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_ORDERS, order);
         this.rabbitTemplate.convertAndSend("work.queue", order);
     }
 
