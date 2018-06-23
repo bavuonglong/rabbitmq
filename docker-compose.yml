@@ -1,0 +1,34 @@
+version: '3'
+services:
+    order-service:
+        container_name: order-container
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: order-app:latest
+        entrypoint: /usr/script/order-app-entrypoint.sh
+        expose:
+            - 1111
+        ports:
+            - 4321:1234
+        networks:
+            - order-app-network
+        depends_on:
+            - rabbit-mq-server-service
+        logging:
+            driver: json-file
+    rabbit-mq-server-service:
+        container_name: rabbit-mq-server-container
+        image: rabbitmq:3.6.6-management
+        expose:
+            - 2222
+        ports:
+            - 5672:5672
+            - 15672:15672
+        networks:
+            - order-app-network
+        logging:
+            driver: json-file
+networks:
+    order-app-network:
+        driver: bridge

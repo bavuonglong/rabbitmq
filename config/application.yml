@@ -13,10 +13,11 @@ spring:
         stateless: true
       simple:
         acknowledge-mode: manual
-    host: localhost
+    host: rabbit-mq-server-service
     port: 5672
     username: guest
     password: guest
+server:
+  port: 1234
 
-
-greeting: "Greeting from application yml inside resource folder"
+greeting: "Greeting from application yml inside config folder"
