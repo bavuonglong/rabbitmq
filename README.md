@@ -83,6 +83,25 @@ In case you update docker-compose file, in order to build and up all containers 
 docker-compose up --build
 ```
 
+### Verifying
+If you run project by docker-compose, open your browser and verify the running application by those endpoints:
+
+```$xslt
+localhost:4321 => Welcome to Order Application, Greeting from application yml inside config folder
+localhost:15672 => admin/admin, this is rabbitmq ui management page
+```
+
+If you run project individually, you have to start rabbitmq server by
+```$xslt
+docker run -d -h host-name --name rabbitmq -p "4369:4369" -p "5672:5672" -p "15672:15672" -p "25672:25672" -p "35197:35197" -e "RABBITMQ_USE_LONGNAME=true" -e "RABBITMQ_LOGS=/var/log/rabbitmq/rabbit.log" -v /data:/var/lib/rabbitmq -v /data/logs:/var/log/rabbitmq rabbitmq:3.6.6-management
+
+localhost:15672 => admin/admin, this is rabbitmq ui management page
+```
+
+then verify running project by
+```$xslt
+localhost:8080 => Welcome to Order Application, Greeting from application yml inside resource folder
+```
 ## Deployment
 
 
