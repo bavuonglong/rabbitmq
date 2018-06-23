@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: order-app:latest
+        image: order-app
         entrypoint: /usr/script/order-app-entrypoint.sh
         expose:
             - 1111
