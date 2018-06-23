@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/bavuonglong/rabbitmq/tree/master.svg?style=svg)](https://circleci.com/gh/bavuonglong/rabbitmq/tree/master)
+
 # Rabbit MQ
 
 This project aims to demonstrate publishing and consuming message with RabbitMQ.
