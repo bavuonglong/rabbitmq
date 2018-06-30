@@ -7,7 +7,7 @@ RUN apk add --no-cache openjdk8 \
 
 USER root
 RUN mkdir -p /data/project/orderapp/config
-COPY ./config/* /data/project/orderapp/config/
+COPY ./external-config/* /data/project/orderapp/config/
 COPY ./target/order-app.jar /data/project/orderapp/app.jar
 
 COPY ./script/* /usr/script/
